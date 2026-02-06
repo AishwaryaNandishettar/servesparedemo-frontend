@@ -1,5 +1,6 @@
 // ExcelMenuManager.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+
 import * as XLSX from "xlsx";
 import { useMenuSocket } from "./useMenuSocket";
 
@@ -45,24 +46,25 @@ export default function ExcelMenuManager({
   });
 
   useEffect(() => {
-    fetchMenu();
-  }, []);
+  fetchMenu();
+}, [fetchMenu]);
 
-  async function fetchMenu() {
-    try {
-      setLoading(true);
-      const res = await fetch(apiBase, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
-      if (!res.ok) throw new Error("Failed to load menu");
-      const json = await res.json();
-      setItems(Array.isArray(json) ? json : []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+
+  const fetchMenu = useCallback(async () => {
+  try {
+    setLoading(true);
+    const res = await fetch(apiBase, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
+    if (!res.ok) throw new Error("Failed to load menu");
+    const json = await res.json();
+    setItems(Array.isArray(json) ? json : []);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
   }
+}, [apiBase, token]);
 
   // Inline create/update
   async function saveItem(item, isNew = false) {

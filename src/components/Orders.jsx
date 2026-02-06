@@ -26,32 +26,7 @@ const CANCEL_REASONS = [
 
 const getPrice = (name) => MENU_PRICES[name] || 0;
 
-/* ✅ SAFE DATE + TIME PARSER (UNCHANGED) */
-const parseOrderDateTime = (dateStr, timeStr) => {
-  if (!dateStr || !timeStr) return null;
 
-  const [day, month, year] = dateStr.split("/").map(Number);
-  let hours = 0;
-  let minutes = 0;
-
-  if (
-    timeStr.toLowerCase().includes("am") ||
-    timeStr.toLowerCase().includes("pm")
-  ) {
-    const [time, modifier] = timeStr.split(" ");
-    let [h, m] = time.split(":").map(Number);
-
-    if (modifier.toLowerCase() === "pm" && h !== 12) h += 12;
-    if (modifier.toLowerCase() === "am" && h === 12) h = 0;
-
-    hours = h;
-    minutes = m;
-  } else {
-    [hours, minutes] = timeStr.split(":").map(Number);
-  }
-
-  return new Date(year, month - 1, day, hours, minutes);
-};
 
 const Orders = () => {
   const [tab, setTab] = useState("past");
@@ -274,18 +249,25 @@ const Orders = () => {
             ))}
 
             <div className="modal-actions">
-              <button
-              onClick={() => setShowCancelModal(false)}>
-                Close
-              </button>
-              <button
-                className="Confirm-btn"
-                disabled={!cancelReason}
-                onClick={confirmCancel}
-              >
-                Confirm Cancel
-              </button>
-            </div>
+  <button
+    onClick={() => {
+      setShowCancelModal(false);
+      setCancelReason("");
+      setSelectedOrderId(null);
+    }}
+  >
+    Close
+  </button>
+
+  <button
+    className="Confirm-btn"
+    disabled={!cancelReason}
+    onClick={confirmCancel}
+  >
+    Confirm Cancel
+  </button>
+</div>
+
           </div>
         </div>
       )}

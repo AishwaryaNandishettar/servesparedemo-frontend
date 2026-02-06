@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import "../styles/cart.css";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
-  const navigate = useNavigate();
+  
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
